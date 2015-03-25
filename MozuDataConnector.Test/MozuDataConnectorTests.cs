@@ -840,5 +840,40 @@ namespace MozuDataConnector.Test
                     wishList).Result;
             }
         }
+
+        [TestMethod]
+        public void Get_Order_CreateAuth()
+        {
+            var orderHandler = new MozuDataConnector.Domain.Handlers.OrderHandler();
+
+            var orders = orderHandler.GetOrders(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, 0, 20, null, "OrderNumber eq '20'").Result;
+
+            var existingOrder = orders.FirstOrDefault(d=> d.OrderNumber == 20);
+
+            var action = new Mozu.Api.Contracts.CommerceRuntime.Payments.PaymentAction()
+            {
+                //ActionName = "AuthorizePayment",
+                ActionName = "CreatePayment",
+                Amount = 5.55m,
+                CurrencyCode = "USD",
+                InteractionDate = DateTime.Now,
+                NewBillingInfo = new Mozu.Api.Contracts.CommerceRuntime.Payments.BillingInfo()
+                {
+                    AuditInfo = existingOrder.Payments[0].AuditInfo,
+                    BillingContact = existingOrder.Payments[0].BillingInfo.BillingContact,
+                    Card = existingOrder.Payments[0].BillingInfo.Card,
+                    IsSameBillingShippingAddress = existingOrder.Payments[0].BillingInfo.IsSameBillingShippingAddress,
+                    PaymentType = existingOrder.Payments[0].BillingInfo.PaymentType,
+                    StoreCreditCode = existingOrder.Payments[0].BillingInfo.StoreCreditCode
+                }
+            };
+
+            var paymentOrder = orderHandler.CreatePaymentAction(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, action, existingOrder).Result;
+
+
+        }
+
     }
 }
