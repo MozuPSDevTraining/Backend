@@ -66,6 +66,7 @@
     <Compile Include="Handlers\AttributeHandler.cs" />
     <Compile Include="Handlers\OrderEventHandler.cs" />
     <Compile Include="Handlers\CustomerHandler.cs" />
+    <Compile Include="Handlers\OrderHandler.cs" />
     <Compile Include="Handlers\ProductHandler.cs" />
     <Compile Include="Handlers\ProductTypeHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
