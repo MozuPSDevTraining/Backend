@@ -718,7 +718,7 @@ namespace MozuDataConnector.Test
             var customerHandler = new MozuDataConnector.Domain.Handlers.CustomerHandler(_apiContext.TenantId, _apiContext.SiteId,
                 _apiContext.MasterCatalogId);
 
-            var filter = "ExternalId eq " + "'m00349'";
+            var filter = "ExternalId eq " + "'m|00449'";
 
             var account = customerHandler.GetCustomerAccounts(0,1,null, filter).Result;
 
@@ -730,8 +730,8 @@ namespace MozuDataConnector.Test
                     {
                          AcceptsMarketing = false,
                          CompanyOrOrganization = "Candles Unlimited Inc.",
-                         EmailAddress = "alice.wick4@mozu.com",
-                         ExternalId = "m0037",
+                         EmailAddress = "alice.wick6@mozu.com",
+                         ExternalId = "m|00449",
                          FirstName = "Alice", 
                          LastName = "Wick", 
                          IsActive = true,
@@ -739,13 +739,13 @@ namespace MozuDataConnector.Test
                          LocaleCode = "en-US",
                          TaxExempt = false, 
                          IsLocked = false,
-                         UserName = "alice.wick4",
+                         UserName = "alice.wick6",
                          Contacts = new System.Collections.Generic
                              .List<Mozu.Api.Contracts.Customer.CustomerContact>() 
                              {
                                  new Mozu.Api.Contracts.Customer.CustomerContact()
                                  {
-                                      Email = "alice.wick4@mozu.com",
+                                      Email = "alice.wick6@mozu.com",
                                       FirstName = "Alice", 
                                       LastNameOrSurname = "Wick",
                                       Label = "Mrs.",
@@ -847,14 +847,14 @@ namespace MozuDataConnector.Test
             var orderHandler = new MozuDataConnector.Domain.Handlers.OrderHandler();
 
             var orders = orderHandler.GetOrders(_apiContext.TenantId, _apiContext.SiteId,
-                _apiContext.MasterCatalogId, 0, 20, null, "OrderNumber eq '20'").Result;
+                _apiContext.MasterCatalogId, 0, 20, null, "OrderNumber eq '21'").Result;
 
-            var existingOrder = orders.FirstOrDefault(d=> d.OrderNumber == 20);
+            var existingOrder = orders.FirstOrDefault(d=> d.OrderNumber == 21);
 
             var action = new Mozu.Api.Contracts.CommerceRuntime.Payments.PaymentAction()
             {
-                //ActionName = "AuthorizePayment",
-                ActionName = "CreatePayment",
+                ActionName = "AuthorizePayment",
+                //ActionName = "CreatePayment",
                 Amount = 5.55m,
                 CurrencyCode = "USD",
                 InteractionDate = DateTime.Now,
