@@ -13,8 +13,9 @@ namespace MozuDataConnector.Web
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
             new Bootstrapper().Bootstrap(GlobalConfiguration.Configuration);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            
         }
     }
 }

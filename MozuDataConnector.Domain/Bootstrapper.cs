@@ -10,7 +10,7 @@ namespace MozuDataConnector.Domain
         {
             containerBuilder.RegisterType<ApplicationEventHandler>().As<IApplicationEvents>();
             containerBuilder.RegisterType<OrderEventHandler>().As<IOrderEvents>();
-
+            containerBuilder.RegisterType<CustomerEventHandler>().As<ICustomerAccountEvents>();
 
         }
     }

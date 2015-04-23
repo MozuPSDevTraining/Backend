@@ -64,6 +64,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Handlers\ApplicationEventHandler.cs" />
     <Compile Include="Handlers\AttributeHandler.cs" />
+    <Compile Include="Handlers\CustomerEventHandler.cs" />
     <Compile Include="Handlers\OrderEventHandler.cs" />
     <Compile Include="Handlers\CustomerHandler.cs" />
     <Compile Include="Handlers\OrderHandler.cs" />

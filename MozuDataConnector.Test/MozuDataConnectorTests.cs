@@ -47,7 +47,16 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Get_Popularity_Attribute()
+        public void Get_Category()
+        {
+            var productHandler = new MozuDataConnector.Domain.Handlers.ProductHandler();
+
+            var category = productHandler.GetCategory(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, 1).Result;
+        }
+
+        [TestMethod]
+        public void Get_Attribute_Popularity()
         {
             var filter = "attributeFQN eq " + "'tenant~popularity'";
 
@@ -58,7 +67,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Add_SunGlass_Style_Attribute()
+        public void Add_Attribute_SunGlass_Style()
         {
             var attributeFQN = "tenant~sunglass-style";
             var filter = string.Format("attributeFQN eq '{0}'", attributeFQN);
@@ -121,7 +130,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_SunGlass_Style_Attribute()
+        public void Update_Attribute_SunGlass_Style()
         {
             var attributeFQN = "tenant~sunglass-style";
             var attributeValues = "Rectangle|Rimless|Butterfly|Oval|Wrap";
@@ -154,7 +163,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Add_SunGlass_Protection_Attribute()
+        public void Add_Attribute_SunGlass_Protection()
         {
             var attributeFQN = "tenant~sunglass-protection";
             var filter = string.Format("attributeFQN eq '{0}'", attributeFQN);
@@ -212,7 +221,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Get_Purse_ProductType()
+        public void Get_ProductType_Purse()
         {
             var filter = "name eq " + "'Purse'";
 
@@ -223,7 +232,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Add_Sunglasses_ProductType()
+        public void Add_ProductType_Sunglasses()
         {
             var productTypeName = "Sunglasses";
             var filter = string.Format("name eq '{0}'", productTypeName);
@@ -261,7 +270,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_Sunglasses_Color_Options_ProductType()
+        public void Update_ProductType_Sunglasses_Color_Options()
         {
             var productTypeName = "Sunglasses";
             var filter = string.Format("name eq '{0}'", productTypeName);
@@ -332,7 +341,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_Sunglasses_Protection_Property_ProductType()
+        public void Update_ProductType_Sunglasses_Protection_Property()
         {
             var productTypeName = "Sunglasses";
             var filter = string.Format("name eq '{0}'", productTypeName);
@@ -370,7 +379,7 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_Sunglasses_Style_Property_ProductType()
+        public void Update_ProductType_Sunglasses_Style_Property()
         {
             var productTypeName = "Sunglasses";
             var filter = string.Format("name eq '{0}'", productTypeName);
@@ -440,16 +449,16 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Get_Purse_Product()
+        public void Get_Product_Purse()
         {
             var productHandler = new MozuDataConnector.Domain.Handlers.ProductHandler();
 
             var products = productHandler.GetProduct(_apiContext.TenantId, _apiContext.SiteId,
-                _apiContext.MasterCatalogId, "LUC-sun-002").Result;
+                _apiContext.MasterCatalogId, "LUC-SUN-003").Result;
         }
 
         [TestMethod]
-        public void Add_Sunglasses_Product()
+        public void Add_Product_Sunglasses()
         {
             var productTypeHandler = new MozuDataConnector.Domain.Handlers.ProductTypeHandler();
 
@@ -577,9 +586,9 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_Sunglasses_Properties_Product()
+        public void Update_Product_Sunglasses_Properties()
         {
-            var productCode = "LUC-SUN-001";
+            var productCode = "LUC-SUN-003";
 
             var productHandler = new MozuDataConnector.Domain.Handlers.ProductHandler();
             var existingProduct = productHandler.GetProduct(_apiContext.TenantId, _apiContext.SiteId,
@@ -661,9 +670,9 @@ namespace MozuDataConnector.Test
         }
 
         [TestMethod]
-        public void Update_Sunglasses_Options_Product()
+        public void Update_Product_Sunglasses_Options()
         {
-            var productCode = "LUC-SUN-001";
+            var productCode = "LUC-SUN-003";
 
             var productHandler = new MozuDataConnector.Domain.Handlers.ProductHandler();
             var existingProduct = productHandler.GetProduct(_apiContext.TenantId, _apiContext.SiteId,
@@ -673,7 +682,9 @@ namespace MozuDataConnector.Test
             {
                 existingProduct.Options = new System.Collections.Generic.List<ProductOption>();
 
-                existingProduct.Options.Add(new ProductOption()
+                //existingProduct.Options.Add(new ProductOption()
+
+                var productOption = new ProductOption()
                 {
                     AttributeFQN = "tenant~color",
                     Values = new System.Collections.Generic.List<ProductOptionValue>() 
@@ -705,10 +716,21 @@ namespace MozuDataConnector.Test
                               }
                         }
                     }
-                });
+                };
 
-                var newProduct = productHandler.UpdateProduct(_apiContext.TenantId, _apiContext.SiteId,
-                    _apiContext.MasterCatalogId, existingProduct).Result;
+//                var newProduct = productHandler.UpdateProduct(_apiContext.TenantId, _apiContext.SiteId, _apiContext.MasterCatalogId, existingProduct).Result;
+
+                var newProductOption = productHandler.AddProductOption(_apiContext.TenantId, _apiContext.SiteId,
+                    _apiContext.MasterCatalogId, productOption, existingProduct.ProductCode).Result;
+
+                var productVariations = new ProductVariationCollection();
+                var productVariation = new ProductVariation() 
+                { };
+
+                var newVariantOption = productHandler.AddProductVariation(_apiContext.TenantId, _apiContext.SiteId, _apiContext.MasterCatalogId, 
+                    productVariations, existingProduct.ProductCode);
+                    
+            
             }
         }
 
@@ -835,45 +857,340 @@ namespace MozuDataConnector.Test
                         }
                 };
 
-                var newAccount = customerHandler.AddCustomerAccount(customerAccountAndAuthInfo, 
-                    credit, 
+                var newAccount = customerHandler.AddCustomerAccount(customerAccountAndAuthInfo,                     credit, 
                     wishList).Result;
             }
         }
 
         [TestMethod]
+        public void Add_Shopper_And_Login()
+        {
+            Mozu.Api.Resources.Commerce.Customer.CustomerAccountResource resource =
+                new Mozu.Api.Resources.Commerce.Customer.CustomerAccountResource(_apiContext);
+
+            Mozu.Api.Resources.Commerce.Customer.Accounts.CustomerContactResource cResource =
+                new Mozu.Api.Resources.Commerce.Customer.Accounts.CustomerContactResource(_apiContext);
+
+            var limit = 1000;
+
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(@"c:\temp\test-import-bf.txt", true))
+            {
+                var date = DateTime.Now.ToString();
+                writer.WriteLine(date);
+            }
+
+            Parallel.For(0, limit, new ParallelOptions { MaxDegreeOfParallelism = 50 }, i =>
+            {
+            var guid = Guid.NewGuid().ToString("N");
+
+                var customerAccountAndAuthInfo = new Mozu.Api.Contracts.Customer.CustomerAccountAndAuthInfo()
+                {
+                    Account = new Mozu.Api.Contracts.Customer.CustomerAccount()
+                    {
+                        AcceptsMarketing = false,
+                        CompanyOrOrganization = "Candles Unlimited Inc.",
+                        EmailAddress = guid + "@mozu.com",
+                        ExternalId = guid,
+                        FirstName = "FFirst-" + guid,
+                        LastName = "SSecond-" + guid,
+                        IsActive = true,
+                        IsAnonymous = false,
+                        LocaleCode = "en-US",
+                        TaxExempt = false,
+                        IsLocked = false,
+                        UserName = guid,
+                        Contacts = new System.Collections.Generic
+                            .List<Mozu.Api.Contracts.Customer.CustomerContact>() 
+                             {
+                                 new Mozu.Api.Contracts.Customer.CustomerContact()
+                                 {
+                                      Email = guid + "@mozu.com",
+                                      FirstName = "First-" + guid,
+                                      LastNameOrSurname = "Second-" + guid,
+                                      Label = "Mrs.",
+                                      PhoneNumbers = new Mozu.Api.Contracts.Core.Phone()
+                                      { 
+                                        Mobile = "555-555-0001"
+                                      },
+                                      Address = new Mozu.Api.Contracts.Core.Address()
+                                      {
+                                            Address1 = "100 " + guid,
+                                            AddressType = "Residentail",
+                                            CityOrTown = "Austin",
+                                            CountryCode = "US",
+                                            PostalOrZipCode = "78702",
+                                            StateOrProvince = "TX"
+                                      },
+                                       Types = new System.Collections.Generic
+                                           .List<Mozu.Api.Contracts.Customer.ContactType>()
+                                           {
+                                               new Mozu.Api.Contracts.Customer.ContactType()
+                                               {
+                                                    IsPrimary = true,
+                                                     Name = "Billing"
+                                               }
+                                           }
+                                 },
+                             }
+                    },
+                    Password = guid + "!",
+                    IsImport = true
+                };
+
+                var c = resource.AddAccountAndLoginAsync(customerAccountAndAuthInfo).Result;
+                var cr = cResource.AddAccountContactAsync(customerAccountAndAuthInfo.Account.Contacts[0], c.CustomerAccount.Id).Result;
+            });
+
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(@"c:\temp\test-import-bf.txt", true))
+            {
+                var date = DateTime.Now.ToString();
+                writer.WriteLine(date);
+            }
+        }
+        
+
+        [TestMethod]
         public void Get_Order_CreateAuth()
         {
+            var orderNumber = 18;
             var orderHandler = new MozuDataConnector.Domain.Handlers.OrderHandler();
 
             var orders = orderHandler.GetOrders(_apiContext.TenantId, _apiContext.SiteId,
-                _apiContext.MasterCatalogId, 0, 20, null, "OrderNumber eq '21'").Result;
+                _apiContext.MasterCatalogId, 0, 20, null, "OrderNumber eq '" + orderNumber + "'").Result;
 
-            var existingOrder = orders.FirstOrDefault(d=> d.OrderNumber == 21);
+            var existingOrder = orders.FirstOrDefault(d=> d.OrderNumber == orderNumber);
 
+            var authorizedPayment = existingOrder.Payments.FirstOrDefault(d => d.Status == "Authorized");
+    
+            var totalAmountRequested = authorizedPayment.AmountRequested;
+            var paymentServiceTransactionId = authorizedPayment.Interactions.FirstOrDefault(d => d != null).GatewayTransactionId;
+            //var paymentServiceTransactionId = authorizedPayment.Id;
+    
             var action = new Mozu.Api.Contracts.CommerceRuntime.Payments.PaymentAction()
             {
-                ActionName = "AuthorizePayment",
-                //ActionName = "CreatePayment",
-                Amount = 5.55m,
+                Amount = totalAmountRequested,
                 CurrencyCode = "USD",
                 InteractionDate = DateTime.Now,
                 NewBillingInfo = new Mozu.Api.Contracts.CommerceRuntime.Payments.BillingInfo()
                 {
-                    AuditInfo = existingOrder.Payments[0].AuditInfo,
-                    BillingContact = existingOrder.Payments[0].BillingInfo.BillingContact,
-                    Card = existingOrder.Payments[0].BillingInfo.Card,
-                    IsSameBillingShippingAddress = existingOrder.Payments[0].BillingInfo.IsSameBillingShippingAddress,
-                    PaymentType = existingOrder.Payments[0].BillingInfo.PaymentType,
-                    StoreCreditCode = existingOrder.Payments[0].BillingInfo.StoreCreditCode
-                }
+                    AuditInfo = authorizedPayment.AuditInfo,
+                    BillingContact = authorizedPayment.BillingInfo.BillingContact,
+                    Card = authorizedPayment.BillingInfo.Card,
+                    IsSameBillingShippingAddress = authorizedPayment.BillingInfo.IsSameBillingShippingAddress,
+                    PaymentType = authorizedPayment.BillingInfo.PaymentType,
+                    StoreCreditCode = authorizedPayment.BillingInfo.StoreCreditCode
+                },
+                ReferenceSourcePaymentId = paymentServiceTransactionId
             };
 
-            var paymentOrder = orderHandler.CreatePaymentAction(_apiContext.TenantId, _apiContext.SiteId,
+            var voidAction = new Mozu.Api.Contracts.CommerceRuntime.Payments.PaymentAction();
+            voidAction.ReferenceSourcePaymentId = paymentServiceTransactionId;
+
+
+            voidAction.ActionName = "VoidPayment";
+            var paymentOrder = orderHandler.PerformPaymentAction(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, voidAction, authorizedPayment, existingOrder.Id).Result;
+
+
+            //AuthorizePayment Call
+            action.ActionName = "AuthorizePayment";
+            action.Amount = 250m;
+            action.ReferenceSourcePaymentId = null;
+            paymentOrder = orderHandler.CreatePaymentAction(_apiContext.TenantId, _apiContext.SiteId,
                 _apiContext.MasterCatalogId, action, existingOrder).Result;
 
 
+            //AuthorizePayment Call
+            action.Amount = 250m;
+            action.ReferenceSourcePaymentId = null;
+            action.ActionName = "AuthorizePayment";
+            paymentOrder = orderHandler.CreatePaymentAction(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, action, existingOrder).Result;
+
         }
 
+        [TestMethod]
+        public void Get_Orders_With_ExternalIDs()
+        {
+            Mozu.Api.Resources.Commerce.OrderResource or = 
+                new Mozu.Api.Resources.Commerce.OrderResource(_apiContext);
+
+            var filter = "ExternalId ne null";
+
+            var orders = or.GetOrdersAsync(0, 200, null, filter, null, null, null).Result;
+
+            filter = "ExternalId eq null";
+
+            orders = or.GetOrdersAsync(0, 200, null, filter, null, null, null).Result;
+
+        }
+
+        [TestMethod]
+        public void Fulfill_Order_Packages()
+        {
+            var orderResource = new Mozu.Api.Resources.Commerce.OrderResource(_apiContext);
+            var packageResource = new Mozu.Api.Resources.Commerce.Orders.PackageResource(_apiContext);
+            var shipmentResource = new Mozu.Api.Resources.Commerce.Orders.ShipmentResource(_apiContext);
+            var fulfillmentInfoResource = new Mozu.Api.Resources.Commerce.Orders.FulfillmentInfoResource(_apiContext);
+            var fulfillmentActionResource = new Mozu.Api.Resources.Commerce.Orders.FulfillmentActionResource(_apiContext);
+
+            var filter = string.Format("OrderNumber eq '{0}'", "26");
+            var existingOrder = (orderResource.GetOrdersAsync(startIndex:0, pageSize:1, filter:filter).Result).Items[0];
+            var existingOrderItems = existingOrder.Items;
+ 
+            var packageItems = new List<Mozu.Api.Contracts.CommerceRuntime.Fulfillment.PackageItem>();
+            foreach(var orderItem in existingOrderItems)
+            {
+                packageItems.Add(new Mozu.Api.Contracts.CommerceRuntime.Fulfillment.PackageItem()
+                { 
+                     ProductCode = orderItem.Product.ProductCode,
+                      Quantity = orderItem.Quantity,
+                      FulfillmentItemType = "Physical"
+                });
+            }
+
+            var package = new Mozu.Api.Contracts.CommerceRuntime.Fulfillment.Package()
+            {
+                Measurements = new Mozu.Api.Contracts.CommerceRuntime.Commerce.PackageMeasurements()
+                {
+                    Height = new Mozu.Api.Contracts.Core.Measurement()
+                    {
+                        Unit = "in",
+                        Value = 10m
+                    },
+                    Length = new Mozu.Api.Contracts.Core.Measurement()
+                    {
+                        Unit = "in",
+                        Value = 10m
+                    },
+                    Width = new Mozu.Api.Contracts.Core.Measurement()
+                    {
+                        Unit = "in",
+                        Value = 10m
+                    },
+                    Weight = new Mozu.Api.Contracts.Core.Measurement()
+                    {
+                        Unit = "lbs",
+                        Value = 10m
+                    },
+                },
+                Items = new List<Mozu.Api.Contracts.CommerceRuntime.Fulfillment.PackageItem>(),
+                 PackagingType = "CUSTOM",
+            };
+            
+            package.Items.AddRange(packageItems);
+
+            var availableShippingMethods = shipmentResource.GetAvailableShipmentMethodsAsync(existingOrder.Id).Result;
+            package.ShippingMethodCode = availableShippingMethods[0].ShippingMethodCode;
+            package.ShippingMethodName = availableShippingMethods[0].ShippingMethodName;
+            package.Code = "Package-01";
+            var updatedPackage = packageResource.CreatePackageAsync(package, existingOrder.Id).Result;
+
+            var packageIds = new List<string>() { updatedPackage.Id };
+            //var updatedPackageShipment = shipmentResource.CreatePackageShipmentsAsync(packageIds, existingOrder.Id).Result;
+
+            var fulfilledShipment = fulfillmentActionResource.PerformFulfillmentActionAsync(
+                new Mozu.Api.Contracts.CommerceRuntime.Fulfillment.FulfillmentAction()
+                {
+                     ActionName = "Ship", // {Ship,Fulfill}
+                      DigitalPackageIds = new List<string>(),
+                      PackageIds = packageIds,
+                      PickupIds = new List<string>()
+                }, 
+                existingOrder.Id)
+                .Result;
+
+            //var updatedOrder = orderResource.UpdateOrderAsync(existingOrder, existingOrder.Id).Result;
+        }
+
+
+        [TestMethod]
+        public void Update_Order_Gift_Message()
+        {
+            var orderNumber = 25;
+
+            var orderHandler = new MozuDataConnector.Domain.Handlers.OrderHandler();
+
+            var orders = orderHandler.GetOrders(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, 0, 1, null, "OrderNumber eq '" + orderNumber + "'").Result;
+
+            var existingOrder = orders.FirstOrDefault(d => d.OrderNumber == orderNumber);
+
+            existingOrder.ExternalId = DateTime.Now.Ticks.ToString();
+
+            if (existingOrder.ShopperNotes == null)
+            {
+                existingOrder.ShopperNotes = new Mozu.Api.Contracts.CommerceRuntime.Orders.ShopperNotes();
+            }
+
+            if (existingOrder.Notes == null)
+            {
+                existingOrder.Notes = new List<Mozu.Api.Contracts.CommerceRuntime.Orders.OrderNote>();
+            }
+            else
+            {
+                foreach(var note in existingOrder.Notes)
+                {
+                    orderHandler.DeleteOrderNote(_apiContext.TenantId, _apiContext.SiteId, _apiContext.MasterCatalogId,
+                        note.Id, existingOrder.Id);
+                }
+            }
+       
+            existingOrder.ShopperNotes.GiftMessage = "new gift message via the SDK - " + DateTime.Now.Ticks;
+            existingOrder.ShopperNotes.Comments = "comments gift message  via the SDK - " + DateTime.Now.Ticks;
+
+            var orderNote = new Mozu.Api.Contracts.CommerceRuntime.Orders.OrderNote()
+            {
+                Text = "new note via the SDK - " + DateTime.Now.Ticks,
+            };
+
+            var updatedOrderNote = orderHandler.AddOrderNote(_apiContext.TenantId, _apiContext.SiteId, _apiContext.MasterCatalogId,
+                orderNote, existingOrder.Id).Result;
+
+
+
+            var updatedOrder = orderHandler.UpdateOrder(_apiContext.TenantId, _apiContext.SiteId, _apiContext.MasterCatalogId,
+                    existingOrder).Result;
+
+            /*
+
+            if (existingOrder.Notes != null && existingOrder.Notes.Count > 0)
+            {
+                var orderAttributes = orderHandler.GetOrderAttribute(_apiContext.TenantId, 
+                    _apiContext.SiteId, _apiContext.MasterCatalogId, existingOrder.Id).Result;
+
+                var giftCardAttribute = orderAttributes.SingleOrDefault(d => d.FullyQualifiedName.ToLower() == "tenant~gift-message");
+
+                if (giftCardAttribute == null)
+                {
+                    existingOrder.Attributes = new List<Mozu.Api.Contracts.CommerceRuntime.Orders.OrderAttribute>();
+                    existingOrder.Attributes.Add(
+                        new Mozu.Api.Contracts.CommerceRuntime.Orders.OrderAttribute()
+                        {
+                            FullyQualifiedName = "tenant~gift-message",
+                        });
+
+                    giftCardAttribute = existingOrder.Attributes.SingleOrDefault(d => d.FullyQualifiedName.ToLower() == "tenant~gift-message");
+                }
+
+                giftCardAttribute.Values = new List<object>();
+
+                giftCardAttribute.Values.Add(existingOrder.Notes[0].Text);
+
+                existingOrder.ShopperNotes = new Mozu.Api.Contracts.CommerceRuntime.Orders.ShopperNotes();
+
+                existingOrder.ShopperNotes.GiftMessage = giftCardAttribute.Values[0].ToString();
+                existingOrder.Notes[0] = null;
+
+                var existingAttributes = orderHandler.AddOrderAttribute(_apiContext.TenantId, _apiContext.SiteId,
+                _apiContext.MasterCatalogId, giftCardAttribute, existingOrder.Id).Result;
+
+                //from comments To giftcard message
+            */
+
+
+            
+            }
+        
     }
 }
